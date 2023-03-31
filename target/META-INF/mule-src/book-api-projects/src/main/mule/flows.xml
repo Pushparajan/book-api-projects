@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/graphql-router http://www.mulesoft.org/schema/mule/graphql-router/current/mule-graphql-router.xsd">
+  <flow name="api-main-flow">
+    <http:listener xmlns:http="http://www.mulesoft.org/schema/mule/http" config-ref="http-listener-config" path="${http.listener.path}"/>
+    <graphql-router:route xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config"/>
+  </flow>
+  <flow name="Query.bookById">
+    <graphql-router:data-fetcher xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Query" fieldName="bookById"/>
+    <graphql-router:serialize xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Query" fieldName="bookById"/>
+  </flow>
+  <flow name="Query.books">
+    <graphql-router:data-fetcher xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Query" fieldName="books"/>
+    <graphql-router:serialize xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Query" fieldName="books"/>
+  </flow>
+  <flow name="Query.bestsellers">
+    <graphql-router:data-fetcher xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Query" fieldName="bestsellers"/>
+    <graphql-router:serialize xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Query" fieldName="bestsellers"/>
+  </flow>
+  <flow name="Book.author">
+    <graphql-router:data-fetcher xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Book" fieldName="author"/>
+    <graphql-router:serialize xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Book" fieldName="author"/>
+  </flow>
+  <flow name="Bestsellers.books">
+    <graphql-router:data-fetcher xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Bestsellers" fieldName="books"/>
+    <graphql-router:serialize xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Bestsellers" fieldName="books"/>
+  </flow>
+  <flow name="Bestsellers.authors">
+    <graphql-router:data-fetcher xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Bestsellers" fieldName="authors"/>
+    <graphql-router:serialize xmlns:graphql-router="http://www.mulesoft.org/schema/mule/graphql-router" config-ref="api-router-config" objectTypeName="Bestsellers" fieldName="authors"/>
+  </flow>
+</mule>

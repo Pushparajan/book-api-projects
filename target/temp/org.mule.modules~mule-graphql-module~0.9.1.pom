@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mule.extensions</groupId>
+    <artifactId>mule-ee-core-modules-parent</artifactId>
+    <version>1.3.0</version>
+  </parent>
+
+  <groupId>org.mule.modules</groupId>
+  <artifactId>mule-graphql-module</artifactId>
+  <version>0.9.1</version>
+  <packaging>mule-extension</packaging>
+
+  <name>APIKit for GraphQL Runtime Extension</name>
+
+  <properties>
+    <graphql-java.version>19.3</graphql-java.version>
+    <graphql-java-extended-scalars.version>19.1</graphql-java-extended-scalars.version>
+    <guava.version>31.1-jre</guava.version>
+    <gson.version>2.9.0</gson.version>
+    <slf4j.version>2.0.0-alpha7</slf4j.version>
+
+    <mtf-tools.version>1.1.2</mtf-tools.version>
+    <munit.input.directory>src/test/munit</munit.input.directory>
+    <munit.extensions.maven.plugin.version>1.1.2</munit.extensions.maven.plugin.version>
+    <jacoco.version>0.8.2</jacoco.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.graphql-java</groupId>
+      <artifactId>graphql-java</artifactId>
+      <version>${graphql-java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.graphql-java</groupId>
+      <artifactId>graphql-java-extended-scalars</artifactId>
+      <version>${graphql-java-extended-scalars.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <!--Test-->
+    <dependency>
+      <groupId>com.mulesoft.munit</groupId>
+      <artifactId>mtf-tools</artifactId>
+      <version>${mtf-tools.version}</version>
+      <classifier>mule-plugin</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mule.connectors</groupId>
+      <artifactId>mule-objectstore-connector</artifactId>
+      <version>1.2.1</version>
+      <classifier>mule-plugin</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.9.0</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.mulesoft.munit</groupId>
+        <artifactId>munit-extensions-maven-plugin</artifactId>
+        <version>${munit.extensions.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>integration-test</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <argLines>
+            <argLine>
+              -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${session.executionRootDirectory}/target/jacoco.exec
+            </argLine>
+          </argLines>
+          <runtimeConfiguration>
+            <discoverRuntimes>
+              <product>EE</product>
+              <includeSnapshots>true</includeSnapshots>
+            </discoverRuntimes>
+          </runtimeConfiguration>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-http-connector</artifactId>
+            <classifier>mule-plugin</classifier>
+            <version>1.5.11</version>
+          </dependency>
+          <dependency>
+            <groupId>68ef9520-24e9-4cf2-b2f5-620025690913</groupId>
+            <artifactId>books-api</artifactId>
+            <version>1.0.0</version>
+            <!-- graphql classifier not supported by region-classloader -->
+            <classifier>graphql</classifier>
+            <type>zip</type>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>mule-plugin</id>
+      <name>Mule Repository</name>
+      <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
+    </pluginRepository>
+    <!--
+    MTF generated application will fetch the dependencies from pluginRepositories definitions
+    doing this MTF will find our local artifacts,
+    simulating we fetch the assets from exchange
+    -->
+    <pluginRepository>
+      <id>local-exchange</id>
+      <url>file://${project.basedir}/src/test/resources/exchange</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+</project>
